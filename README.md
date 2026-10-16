@@ -1,10 +1,10 @@
 # MacroScope
 
-MacroScope is a reproducible U.S. macroeconomic forecasting study. It asks:
+MacroScope is a reproducible hybrid Python–MATLAB U.S. macroeconomic forecasting study. It asks:
 
 > How accurately can inflation, the 3-month Treasury bill rate, real GDP growth, and current unemployment predict the change in unemployment four quarters ahead?
 
-The project emphasizes time-aware validation, transparent benchmarks, and research integrity. It is a predictive exercise—not a causal estimate of monetary-policy effects.
+Python provides validated, provenance-tracked data ingestion. MATLAB owns the econometric regression, pseudo-out-of-sample forecasting, evaluation, and visualization. The project emphasizes time-aware validation, transparent benchmarks, and research integrity. It is a predictive exercise—not a causal estimate of monetary-policy effects.
 
 ## Results
 
@@ -13,6 +13,8 @@ Using 115 pseudo-out-of-sample forecasts (origins 1980Q1–2008Q3), the expandin
 
 As ancillary robustness checks, the historical-mean forecast had 0.7698 pp MAE / 1.0718 pp RMSE, while the 80-quarter rolling OLS had 0.6370 pp MAE / 0.8988 pp RMSE. The expanding-window comparison remains the pre-specified headline result.
 <!-- RESULTS_END -->
+
+The checked-in artifacts were last reproduced with the Python parity pipeline because the development environment did not contain MATLAB. The MATLAB integration test is configured to enforce the same observation counts and headline RMSE values in GitHub Actions.
 
 ![Macroeconomic indicators](outputs/macro_indicators.png)
 
@@ -41,36 +43,40 @@ The primary benchmark predicts zero change. Ancillary checks use the mean of his
 - `RMSE = sqrt(mean((y − ŷ)²))`
 - `improvement = 100 × (benchmark error − model error) / benchmark error`
 
-## Reproduce
+## Reproduce the hybrid workflow
 
-Python 3.11+ is supported. No API keys or manual downloads are required.
+Requirements are Python 3.11+ and MATLAB R2022b or newer. The MATLAB implementation uses base linear algebra for OLS and Newey–West covariance, so no Econometrics or Statistics Toolbox is required. No API keys or manual downloads are required.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python -m src.analysis
+python -m src.ingest
+matlab -batch "addpath('matlab'); run_analysis('data/macrodata.csv','outputs',80,80)"
 python -m pytest -q
+matlab -batch "addpath(genpath('matlab')); results=runtests('matlab/tests'); assertSuccess(results)"
 ```
 
-Optional CLI controls:
+The Python reference implementation remains available as an independently tested parity check:
 
 ```bash
-python -m src.analysis --output-dir outputs --min-train-size 80 --rolling-window 80
+python -m src.analysis
 ```
 
 ## Repository map
 
 ```text
-src/data.py       source loading and validation
-src/features.py   temporally explicit feature/target construction
-src/model.py      HAC full-sample OLS and pseudo-out-of-sample forecasts
-src/evaluate.py   metrics and robustness comparisons
-src/plots.py      static publication-ready figures
-src/analysis.py   CLI orchestration and artifact generation
-tests/            alignment, leakage, metrics, and integration tests
-outputs/          computed tables, predictions, figures, and research brief
+src/data.py                 source loading and validation
+src/ingest.py               Python-to-MATLAB CSV and provenance boundary
+matlab/run_analysis.m       features, forecasts, metrics, and figures
+matlab/newey_west_ols.m     toolbox-light HAC econometrics
+matlab/forecast_metrics.m   forecast scoring
+matlab/tests/               MATLAB integration and regression tests
+src/analysis.py             Python parity/reference pipeline
+tests/                      Python ingestion and alignment tests
+data/                       language-neutral validated input
+outputs/                    computed tables, predictions, and figures
 ```
 
 ## Research integrity and limitations

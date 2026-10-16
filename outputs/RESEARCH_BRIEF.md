@@ -50,10 +50,14 @@ The experiment measures predictive accuracy within this historical sample. It do
 
 ## Reproducibility
 
+Python performs validated source ingestion; MATLAB is the primary econometric, forecasting, and visualization implementation. The retained Python analysis is a parity reference.
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python -m src.analysis
+python -m src.ingest
+matlab -batch "addpath('matlab'); run_analysis('data/macrodata.csv','outputs',80,80)"
 python -m pytest -q
+matlab -batch "addpath(genpath('matlab')); results=runtests('matlab/tests'); assertSuccess(results)"
 ```

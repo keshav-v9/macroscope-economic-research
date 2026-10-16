@@ -1,0 +1,13 @@
+{
+  "dataset": "statsmodels.datasets.macrodata",
+  "source_observations": 203,
+  "first_quarter": "1959Q1",
+  "last_quarter": "2009Q3",
+  "source_documentation": "https://www.statsmodels.org/stable/datasets/generated/macrodata.html",
+  "units": {
+    "realgdp": "Billions of chained 2005 USD, seasonally adjusted annual rate",
+    "infl": "Annualized percent: 400 * ln(CPI_t / CPI_t-1)",
+    "tbilrate": "Quarterly monthly average, 3-month Treasury bill secondary-market rate, percent",
+    "unemp": "Seasonally adjusted percent"
+  }
+}

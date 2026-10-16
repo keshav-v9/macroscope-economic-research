@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  python-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,3 +20,18 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - run: python -m src.analysis
       - run: python -m pytest -q
+
+  matlab-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m src.ingest
+      - uses: matlab-actions/setup-matlab@v2
+      - uses: matlab-actions/run-command@v2
+        with:
+          command: addpath(genpath('matlab')); results=runtests('matlab/tests'); assertSuccess(results)
