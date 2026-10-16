@@ -1,0 +1,24 @@
+{
+  "evaluation_observations": 115,
+  "first_origin": "1980Q1",
+  "last_origin": "2008Q3",
+  "first_target": "1981Q1",
+  "last_target": "2009Q3",
+  "model": {
+    "mae": 0.6446782299760282,
+    "rmse": 0.9238082433771755
+  },
+  "no_change_baseline": {
+    "mae": 0.748695652173913,
+    "rmse": 1.0514999638198013
+  },
+  "improvement_percent": {
+    "mae": 13.893151629218064,
+    "rmse": 12.14376841048648
+  },
+  "source_observations": 203,
+  "complete_model_observations": 198,
+  "forecast_horizon_quarters": 4,
+  "minimum_training_observations": 80,
+  "rolling_window_quarters": 80
+}
